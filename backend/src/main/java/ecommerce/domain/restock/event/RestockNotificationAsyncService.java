@@ -32,6 +32,9 @@ public class RestockNotificationAsyncService {
     /**
      * 재입고 알림 발송 (비동기 처리)
      * productId를 받아 새로운 트랜잭션에서 Product 조회 후 알림 발송
+     *
+     * 중요: 알림 발송 후 RestockNotification 레코드를 삭제하여
+     * 다음 재입고 시 중복 알림을 방지합니다.
      */
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -89,10 +92,6 @@ public class RestockNotificationAsyncService {
 
                     notificationRepository.save(notification);
 
-                    // 알림 발송 플래그 업데이트 (삭제하지 않음)
-                    restockNotification.setIsNotified(true);
-                    restockNotificationRepository.save(restockNotification);
-
                     successCount++;
                     log.info("알림 발송 성공 [{}/{}]: userId={}, userName={}, email={}",
                             successCount, notifications.size(),
@@ -110,12 +109,18 @@ public class RestockNotificationAsyncService {
                 }
             }
 
+            // 알림 발송 후 모든 RestockNotification 레코드 삭제
+            // 이렇게 하면 다음 재입고 시 이전 신청자에게 중복 알림이 발송되지 않음
+            restockNotificationRepository.deleteAll(notifications);
+            restockNotificationRepository.flush();
+
             log.info("========================================");
             log.info("재입고 알림 발송 완료 통계");
             log.info("  - 상품: {} (ID: {})", product.getName(), productId);
             log.info("  - 성공: {}건", successCount);
             log.info("  - 실패: {}건", failCount);
             log.info("  - 총 처리: {}건", notifications.size());
+            log.info("  - 처리 후 레코드 삭제 완료");
             log.info("========================================");
 
         } catch (Exception e) {

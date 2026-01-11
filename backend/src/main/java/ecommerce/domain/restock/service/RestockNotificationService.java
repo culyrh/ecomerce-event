@@ -48,19 +48,8 @@ public class RestockNotificationService {
                 restockNotificationRepository.findByProductIdAndUserId(product.getId(), user.getId());
 
         if (existingNotification.isPresent()) {
-            RestockNotification notification = existingNotification.get();
-
-            // 이미 발송되지 않은 알림이 있으면 중복 에러
-            if (!notification.getIsNotified()) {
-                throw new BadRequestException(ErrorCode.DUPLICATE_NOTIFICATION_REQUEST);
-            }
-
-            // 이전에 발송된 알림이 있으면 재사용 (isNotified를 false로 초기화)
-            notification.setIsNotified(false);
-            RestockNotification savedNotification = restockNotificationRepository.save(notification);
-
-            log.info("재입고 알림 재신청: 사용자={}, 상품={}", email, product.getName());
-            return mapToResponse(savedNotification);
+            // 이미 신청된 알림이 있으면 중복 에러
+            throw new BadRequestException(ErrorCode.DUPLICATE_NOTIFICATION_REQUEST);
         }
 
         // 새로운 알림 신청 생성
@@ -94,7 +83,6 @@ public class RestockNotificationService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        // 수정: findByUser 대신 findByUserId 사용
         Seller seller = sellerRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.SELLER_NOT_FOUND));
 
