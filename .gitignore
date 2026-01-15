@@ -53,3 +53,11 @@ firebase-service-account.json
 *.pem
 *.ppk
 *-key.json
+
+### Docs
+docs/postman/
+docs/API_명세서.md
+docs/architecture.md
+docs/img.png
+docs/img_1.png
+

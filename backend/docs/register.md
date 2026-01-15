@@ -1,6 +1,6 @@
 ### Oauth
 
-####  Google OAuth2 플로우
+####  Naver OAuth2 플로우
 
 ```
 1. Authorization Code 받기 (프론트엔드)
@@ -26,12 +26,12 @@
 
 - 같은 이메일로 일반 회원가입을 2번 할 수 없습니다. (409 에러)
 
-- 하지만 일반 가입 후, 같은 이메일로 구글 로그인을 시도하면 기존 계정에 소셜 정보가 추가되는 방식으로 통합됩니다.
-  - **결과적으로 하나의 계정에 일반 로그인과 구글 로그인 둘 다 가능해집니다.**
+- 하지만 일반 가입 후, 같은 이메일로 네이버 로그인을 시도하면 기존 계정에 소셜 정보가 추가되는 방식으로 통합됩니다.
+  - **결과적으로 하나의 계정에 일반 로그인과 네이버 로그인 둘 다 가능해집니다.**
 
-(1) 일반 가입 -> 구글 로그인: 계정 통합
+(1) 일반 가입 -> 네이버 로그인: 계정 통합
 
-(2) 구글 로그인 -> 일반 가입: `existByEmail()`체크 후 '이미 사용중인 이메일입니다' 에러
+(2) 네이버 로그인 -> 일반 가입: `existByEmail()`체크 후 '이미 사용중인 이메일입니다' 에러
 
 <br>
 
@@ -67,7 +67,7 @@ private User findOrCreateUser(OAuth2UserInfo userInfo) {
 ```
 // User.java
 - password: nullable (소셜 로그인 사용자는 null)
-- provider: "GOOGLE", "FIREBASE", null (일반 가입)
+- provider: "NAVER", "FIREBASE", null (일반 가입)
 - providerId: 소셜 플랫폼 고유 ID
 - role: ROLE_USER (기본값)
 - is_active: true (소프트 삭제 플래그)
