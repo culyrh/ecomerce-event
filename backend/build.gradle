@@ -60,8 +60,9 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// Database
-	runtimeOnly 'org.postgresql:postgresql'
+	// Database (postgre -> mysql)
+	// runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
