@@ -41,7 +41,7 @@ public class Product {
     @Column(nullable = false, length = 255)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
 
     @Column(nullable = false, precision = 12, scale = 2)
