@@ -30,10 +30,10 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h localhost -ptest"
+          --health-cmd="mysqladmin ping -h localhost -u test -ptest"
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 5
+          --health-retries 10
 
       redis:
         image: redis:7
@@ -59,9 +59,20 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Wait for MySQL  # 추가
+        run: |
+          for i in {1..30}; do
+            if mysql -h 127.0.0.1 -P 3306 -u test -ptest -e "SELECT 1" > /dev/null 2>&1; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL... ($i/30)"
+            sleep 2
+          done
+
       - name: Build with Gradle
         env:
-          DB_HOST: localhost
+          DB_HOST: 127.0.0.1  # localhost -> 127.0.0.1
           DB_PORT: 3306
           DB_NAME: ecommerce_test
           DB_USERNAME: test
@@ -73,7 +84,7 @@ jobs:
 
       - name: Run tests
         env:
-          DB_HOST: localhost
+          DB_HOST: 127.0.0.1  # localhost -> 127.0.0.1
           DB_PORT: 3306
           DB_NAME: ecommerce_test
           DB_USERNAME: test
