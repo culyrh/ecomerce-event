@@ -42,7 +42,7 @@ public class Review {
     @Column(nullable = false)
     private Integer rating;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String content;
 
     @CreationTimestamp
